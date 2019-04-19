@@ -71,6 +71,8 @@ cargo {
     profile = "release"
 
     exec = rootProject.ext.cargoExec
+
+    extraCargoArguments = rootProject.ext.extraCargoArguments
 }
 
 dependencies {

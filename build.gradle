@@ -197,11 +197,16 @@ if (file('local.properties').canRead()) {
 // where two builds of some crates are required when they wouldn't otherwise be,
 // as well as improving build times for local development.
 ext.nonMegazordProfile = "debug"
+// Additionally, we require `--locked` in CI, but not for local builds.
+// Unlike the above, this can't be overridden by `local.properties` (mainly
+// because doing so seems pointless, not for any security reason)
+ext.extraCargoArguments = []
 
 if (System.getenv("CI")) {
     // Note: CI can still override this (and does for PRs), this
     // is just the default
     ext.nonMegazordProfile = "release"
+    ext.extraCargoArguments = ["--locked"]
 }
 
 if (localProperties != null) {
