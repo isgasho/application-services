@@ -29,6 +29,10 @@ opt-level = "s"
 debug = true
 lto = true
 
-[patch.crates-io]
 # Until https://github.com/jgallagher/rusqlite/pull/511 lands and is in a release.
-rusqlite = { git = "https://github.com/thomcc/rusqlite", branch = "no-sqlcipher-bundled-panic" }
+[patch.crates-io.rusqlite]
+git = "https://github.com/thomcc/rusqlite"
+# XXX: This inexplicably fails on taskcluster (and only on taskcluster),
+#      so we specify the revision instead...
+# branch = "no-sqlcipher-bundled-panic"
+rev = "fe80b51e89b105b826e11fd6466bc4c527f26bf8"
