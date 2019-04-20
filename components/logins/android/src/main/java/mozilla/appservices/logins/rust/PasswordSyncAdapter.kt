@@ -5,7 +5,6 @@
 
 package mozilla.appservices.logins.rust
 
-import android.util.Log
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.Pointer
@@ -15,18 +14,10 @@ import java.lang.reflect.Proxy
 @Suppress("FunctionNaming", "FunctionParameterNaming", "LongParameterList", "TooGenericExceptionThrown")
 internal interface PasswordSyncAdapter : Library {
     companion object {
-        private val JNA_LIBRARY_NAME = {
-            val libname = System.getProperty("mozilla.appservices.logins_ffi_lib_name")
-            if (libname != null) {
-                Log.i("AppServices", "Using logins_ffi_lib_name: " + libname)
-                libname
-            } else {
-                "logins_ffi"
-            }
-        }()
+        private val JNA_LIBRARY_NAME = System.getProperty("mozilla.appservices.megazord")
 
         internal var INSTANCE: PasswordSyncAdapter = try {
-            val lib = Native.loadLibrary(JNA_LIBRARY_NAME, PasswordSyncAdapter::class.java) as PasswordSyncAdapter
+            val lib = Native.load<PasswordSyncAdapter>(JNA_LIBRARY_NAME, PasswordSyncAdapter::class.java)
             if (JNA_LIBRARY_NAME == "logins_ffi") {
                 // Enable logcat logging if we aren't in a megazord.
                 lib.sync15_passwords_enable_logcat_logging()

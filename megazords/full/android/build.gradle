@@ -22,13 +22,18 @@ android {
     }
 
     sourceSets {
-        main.jniLibs.srcDirs += "$buildDir/nativeLibs/android"
         test.resources.srcDirs += "$buildDir/rustJniLibs/desktop"
         test.resources.srcDirs += "$buildDir/nativeLibs/desktop"
     }
 
     // Uncomment to include debug symbols in native library builds.
     // packagingOptions { doNotStrip "**/*.so" }
+}
+
+afterEvaluate {
+    android.sourceSets.debug.jniLibs.srcDirs = android.sourceSets.main.jniLibs.srcDirs
+    android.sourceSets.release.jniLibs.srcDirs = android.sourceSets.main.jniLibs.srcDirs
+    android.sourceSets.main.jniLibs.srcDirs = []
 }
 
 configurations {
@@ -58,7 +63,7 @@ cargo {
     // Where Cargo writes its outputs.
     targetDirectory = '../../../target'
 
-    libname = 'lockbox'
+    libname = 'megazord'
 
     // The Cargo targets to invoke.  The mapping from short name to target
     // triple is defined by the `rust-android-gradle` plugin.
@@ -89,7 +94,7 @@ afterEvaluate {
         }
         def buildType = "${variant.buildType.name.capitalize()}"
         tasks["generate${productFlavor}${buildType}Assets"].dependsOn(tasks["cargoBuild"])
-        tasks["generate${productFlavor}${buildType}Assets"].dependsOn(tasks["copyNativeLibs"])
+        // Don't depend on copyNativeLibs here as NSS libs are shipped with GeckoView.
 
         // For unit tests.
         tasks["process${productFlavor}${buildType}UnitTestJavaRes"].dependsOn(tasks["cargoBuild"])
